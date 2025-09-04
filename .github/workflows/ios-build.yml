@@ -1,0 +1,32 @@
+name: Build Flutter iOS
+
+on:
+  workflow_dispatch:   # Ejecutar manualmente
+  push:
+    branches:
+      - main           # Cambia si tu rama principal es otra
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.3'   # Ajusta a la versión que uses
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build
+          path: build/ios/iphoneos/*.app
